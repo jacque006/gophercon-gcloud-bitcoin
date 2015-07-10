@@ -127,8 +127,10 @@ func publish(message string){
 	})
 	if err != nil {
 		log.Println(err)
+		tracelog.Error(err, `Error publishing to pubsub`, `publish`)
+	}else{
+		tracelog.Trace(msgIDs, "publish", "Message stored in pubsub")
 	}
-	log.Println("Message '",message, "' stored in pubsub with id", msgIDs)
 }
 
 func getCtx() context.Context{
