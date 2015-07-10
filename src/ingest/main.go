@@ -18,27 +18,28 @@ var TAG = "main"
 
 // Represents a transaction we will write to the graph database.
 type Transaction struct {
-	hash string
-	time int32
+	Hash string `json:"hash"`
+	Time int32 `json:"time"`
 	// key: address, value: value
-	inputs map[string]int64
-	outputs map[string]int64
+	In map[string]int64  `json:"in"`
+	Out map[string]int64  `json:"out"`
 }
 
 func SatoshisToBTC(value int64) float64 {
 	return float64(value) / 100000000
 }
 
+
 func (t Transaction) String() string {
 	s := "\n\n"
-	s += fmt.Sprintf("Transaction Hash: %s\n", t.hash)
-	s += fmt.Sprintf("Time: %v\n", t.time)
+	s += fmt.Sprintf("Transaction Hash: %s\n", t.Hash)
+	s += fmt.Sprintf("Time: %v\n", t.Time)
 	s += " Inputs:\n"
-	for key, value := range t.inputs {
+	for key, value := range t.In {
 		s += fmt.Sprintf("   %s : %v BTC\n", key, SatoshisToBTC(value))
 	}
 	s += " Outputs:\n"
-	for key, value := range t.outputs {
+	for key, value := range t.Out {
 		s += fmt.Sprintf("   %s : %v BTC\n", key, SatoshisToBTC(value))
 	}
 	s += "\n"
@@ -105,7 +106,6 @@ func TransactionFromJSON(b []byte) Transaction {
 // Checks if bytes are valid json.
 // Probably a better way to this.
 func IsValidJson(b []byte) bool {
-
 	var objmap map[string]*json.RawMessage
 	err := json.Unmarshal(b, &objmap)
 	
@@ -117,7 +117,13 @@ func HandleTransaction(b []byte) {
 	tracelog.Trace(TAG, "HandleTransaction", "Converting JSON to Transaction...")
 	t := TransactionFromJSON(b)
 	tracelog.Info(TAG, "HandleTransaction", t.String())
-	publish(t.String())
+
+	jsonData, err := json.Marshal(t)
+	if err != nil {
+		tracelog.Error(err, `Error trying to marshal`, `HandleTransaction`)
+	}
+
+	publish(string(jsonData))
 }
 
 func publish(message string){
