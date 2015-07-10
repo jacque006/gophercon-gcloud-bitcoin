@@ -129,7 +129,7 @@ func publish(message string){
 		log.Println(err)
 		tracelog.Error(err, `Error publishing to pubsub`, `publish`)
 	}else{
-		tracelog.Trace(msgIDs, "publish", "Message stored in pubsub")
+		tracelog.Info(msgIDs[0], "publish", "Message stored in pubsub")
 	}
 }
 
@@ -138,7 +138,7 @@ func getCtx() context.Context{
 	// JSON key. Read the google package examples to learn more about
 	// different authorization flows you can use.
 	// http://godoc.org/golang.org/x/oauth2/google
-	jsonKey, err := ioutil.ReadFile("./fbcodelab31-6e0ad3664d4e.json")
+	jsonKey, err := ioutil.ReadFile("./fbcodelab31-4ca395dcb1f2.json")
 	if err != nil {
 		log.Fatal(err)
 	}
